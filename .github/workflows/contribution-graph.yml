@@ -8,7 +8,35 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    steps:name: Generate Pacman Contribution Graph
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # runs daily at midnight
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+
+      - uses: Platane/snk@v3
+        with:
+          github_user_name: shabiul
+          outputs: |
+            ./output/pacman-contribution-graph.svg
+            ./output/pacman-contribution-graph-dark.svg
+
+      - name: Push SVG files
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: "output"
+          message: "Generate Pacman contribution graph"
+
       - uses: actions/checkout@v3
 
       - uses: Platane/snk@v3
