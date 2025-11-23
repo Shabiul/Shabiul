@@ -2,52 +2,30 @@ name: Generate Pacman Contribution Graph
 
 on:
   schedule:
-    - cron: "0 0 * * *"
-  workflow_dispatch:
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:name: Generate Pacman Contribution Graph
-
-on:
-  schedule:
-    - cron: "0 0 * * *" # runs daily at midnight
-  workflow_dispatch:
+    - cron: "0 0 * * *" # runs every day at 00:00 UTC
+  workflow_dispatch:     # lets you run it manually from Actions tab
 
 permissions:
-  contents: write
+  contents: write        # allow this workflow to push to the repo
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - uses: Platane/snk@v3
+      - name: Generate Pacman contribution graph
+        uses: Platane/snk@v3
         with:
           github_user_name: shabiul
           outputs: |
             ./output/pacman-contribution-graph.svg
             ./output/pacman-contribution-graph-dark.svg
 
-      - name: Push SVG files
+      - name: Commit and push SVG files
         uses: EndBug/add-and-commit@v9
         with:
           add: "output"
-          message: "Generate Pacman contribution graph"
-
-      - uses: actions/checkout@v3
-
-      - uses: Platane/snk@v3
-        with:
-          github_user_name: shabiul
-          outputs: |
-            ./output/pacman-contribution-graph.svg
-            ./output/pacman-contribution-graph-dark.svg
-
-      - name: Push changes
-        uses: EndBug/add-and-commit@v9
-        with:
-          add: "output"
-          message: "update pacman contribution graph"
+          message: "chore: update pacman contribution graph"
